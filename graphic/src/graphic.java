@@ -247,64 +247,76 @@ class Puzzle implements ActionListener, WindowListener {
 		t.start(); // 타이머 스타트
 	}
 	void InArray() {
-		pArray = new int[(size*size)];
+		int inv_count = 0;
+		pArray = new int[(size*size)];	//pArray 배열에 0~size*size크기만큼 값을 순서대로 넣는다
 		for(int i=0;i<size*size;i++) {
-			pArray[i] = i;
-			System.out.print(pArray[i]+" ");
-			
+			pArray[i] = i;	
 		}
-		for(int i=0;i<1000;i++) {
-			int num = 0;
-			rnum = (int) (Math.random() * ((size * size) - 2));
-			pnum = (int) (Math.random() * 3);    //0(상) 1(우) 2(하) 3(좌)
-			switch(pnum) {
-			case 0:
-				if(rnum / size == 0 ) {
-					continue;
+		while(true) {
+			inv_count = 0;
+			
+			for(int i=0;i<100;i++) {
+				int num = 0;
+				int 
+				rnum = (int) (Math.random() * ((size * size) - 2));	//rnum에 맨 마지막 번지의 값을 제외한 나머지 숫자를 랜덤으로 뽑는다.
+				pnum = (int) (Math.random() * 3);    //0(상) 1(우) 2(하) 3(좌)	//이동할 곳을 0~3숫자를 이용하여 랜덤으로 뽑는다.
+		
+					switch(pnum) {
+					case 0:
+						if(rnum / size == 0 ) {
+							continue;
+						}
+						else {
+							num = pArray[rnum];
+							pArray[rnum] = pArray[rnum-size];
+							pArray[rnum-size] = num;
+						}
+						
+					case 1:
+						if(rnum % size == size-1 || rnum == size * size - (size-1)) {	
+							continue;
+						}
+						else {
+							num = pArray[rnum];
+							pArray[rnum] = pArray[rnum+1];
+							pArray[rnum+1] = num;
+						}
+					case 2:
+						if(rnum / size == size-1 || rnum == size * size -(size+1) ) {
+							continue;
+						}
+						else {
+							num = pArray[rnum];
+							pArray[rnum] = pArray[rnum+size];
+							pArray[rnum+size] = num;
+						}
+					case 3:
+						if(rnum / size == 0) {
+							continue;
+						}
+						else {
+							num = pArray[rnum];
+							pArray[rnum] = pArray[rnum-1];
+							pArray[rnum-1] = num;
+						}
+					}
+			}	
+					
+			for(int i =0;i<size*size-1;i++) {	//배열의 앞과 뒤를 비교하여 앞번지가 뒤번지 보다 크면 카운터를 1올린다.
+				for(int j = i+1;j<size*size;j++) {
+					if(pArray[i] > pArray[j]) {
+						inv_count++;
+					}
 				}
-				else {
-					num = pArray[rnum];
-					pArray[rnum] = pArray[rnum-size];
-					pArray[rnum-size] = num;
-				}
-				
-			case 1:
-				if(rnum % size == size-1 || rnum == size * size - (size-1)) {
-					continue;
-				}
-				else {
-					num = pArray[rnum];
-					pArray[rnum] = pArray[rnum+1];
-					pArray[rnum+1] = num;
-				}
-			case 2:
-				if(rnum / size == size-1 || rnum == size * size -(size+1) ) {
-					continue;
-				}
-				else {
-					num = pArray[rnum];
-					pArray[rnum] = pArray[rnum+size];
-					pArray[rnum+size] = num;
-				}
-			case 3:
-				if(rnum / size == 0) {
-					continue;
-				}
-				else {
-					num = pArray[rnum];
-					pArray[rnum] = pArray[rnum-1];
-					pArray[rnum-1] = num;
-				}
-				
+			} 
+			
+			if(inv_count % 2 == 0) {	//카운터가 짝수이면 퍼즐을 풀수있음
+				break;
 			}
-			
-		}
-		System.out.println();
-		for(int i =0 ;i<size*size;i++) {
-			System.out.print(pArray[i]+" ");
-		}
-		
-		
+			else {	//홀수개이면 퍼즐을 풀수없기 때문에 다시 반복한다.
+				continue;
+			}
+		}	
 	}
 	
 	void hsSet() { // LinkedHashSet사용 시 중복없이 배열형성가능 값이 들어갈 때 크기가 커지는 형태이므로 size=5일시 25가 되기전까지 계속해서
@@ -430,9 +442,7 @@ class Puzzle implements ActionListener, WindowListener {
 			c1 = a;
 			c2 = b;
 		}
-
 		Counting();
-
 	}
 
 	@Override
